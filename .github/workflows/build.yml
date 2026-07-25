@@ -1,5 +1,7 @@
 name: Build docker image
 
+run-name: ${{ github.event_name == 'workflow_dispatch' && 'Manually run' || github.event.head_commit.message }}
+
 on:
   push:
     branches:
@@ -64,5 +66,5 @@ jobs:
           file: dockerfile
           push: true
           tags: |
-            ${{ env.IMAGE_TAG }}
             ${{ env.IMAGE_LATEST_TAG }}
+            ${{ env.IMAGE_TAG }}
