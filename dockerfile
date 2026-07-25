@@ -1,6 +1,6 @@
-FROM archlinux:base-devel
+FROM archlinux:base
 
-RUN pacman -Sy --noconfirm wine-staging xorg-server-xvfb diffutils util-linux && \
+RUN pacman -Sy --noconfirm wine-staging xorg-server-xvfb && \
 	useradd -m nsrunner
 
 COPY --chown=nsrunner:nsrunner --chmod=755 entrypoint.sh run.sh /usr/local/bin/

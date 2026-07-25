@@ -12,6 +12,10 @@ if [ ! -f "$SRVPATH/$ENTRY" ]; then
 	log "missing northstar, copying files..."
 	cp -rf /mnt/northstar/* /home/r2ds/
 	chown -R nsrunner:nsrunner /home/r2ds
+
+	log "linking plugins..."
+	rm -rf -- "$PLUGINPATH"
+	ln -s -- /mnt/plugins "$PLUGINPATH"
 fi
 
 declare -A CFG_ENV_ALIASES=(
@@ -154,10 +158,6 @@ if ! cmp -s <(list_file_names "$MODPATH") <(list_file_names "/mnt/mods"); then
 else
 	log "mods are already up to date!"
 fi
-
-log "linking plugins..."
-rm -rf -- "$PLUGINPATH"
-ln -s -- /mnt/plugins "$PLUGINPATH"
 
 WINEDEBUG="${WINEDEBUG:-fixme-bcrypt}"
 

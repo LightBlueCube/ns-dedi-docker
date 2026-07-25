@@ -55,7 +55,9 @@ docker run --rm \
 
 ### Build
 
-Make sure you have placed slimmed base Titanfall 2 files into `R2N/`
+Make sure you have placed the slimmed-down base Titanfall 2 files in `R2N/`
+
+If you does not have one, check the Releases of this repository
 
 ```bash
 docker buildx build -t nsdedi -f dockerfile .
@@ -116,7 +118,9 @@ docker run --rm \
 
 ### 构建
 
-请确保已将精简的ttf2基础文件放在 `R2N/` 目录中
+确保已将精简后的ttf2基础文件放在 `R2N/` 目录中
+
+如果你并没有一个，查看这个仓库的Releases
 
 ```bash
 docker buildx build -t nsdedi -f dockerfile .
