@@ -15,7 +15,7 @@ ENV MODPATH="${SRVPATH}/R2Northstar/mods"
 ENV PLUGINPATH="${SRVPATH}/R2Northstar/plugins"
 ENV NS_WINE_PREFIX="/home/nsrunner/.wine"
 
-ENV REQUIRED_STARTUP_ARGS="-dedicated"
+ENV REQUIRED_STARTUP_ARGS="-dedicated -noconsoleinput"
 ENV NS_STARTUP_ARGS=""
 
 ENV PORT_TCP="8081"

@@ -162,20 +162,19 @@ else
 	log "mods are already up to date!"
 fi
 
-NS_WINE_DEBUG="${NS_WINE_DEBUG:-fixme-bcrypt}"
+export WINEPREFIX="${WINEPREFIX:-$NS_WINE_PREFIX}"
 
-if [[ ! -f "$NS_WINE_PREFIX/system.reg" ]]; then
-	log "wine prefix is missing; initializing it at $NS_WINE_PREFIX"
-	su nsrunner -c "WINEPREFIX=\"$NS_WINE_PREFIX\" WINEDEBUG=\"$NS_WINE_DEBUG\" wineboot"
+if [[ ! -f "$WINEPREFIX/system.reg" ]]; then
+	log "wine prefix is missing; initializing it at $WINEPREFIX"
+	runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" wineboot
 fi
 
 if [[ -n "${PORT_UDP-}" ]]; then
 	REQUIRED_STARTUP_ARGS="$REQUIRED_STARTUP_ARGS -port $PORT_UDP"
 fi
 
+export WINEDEBUG="${WINEDEBUG:-fixme-bcrypt}"
+export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-winedbg.exe=}"
 
 log "all done! starting the server..."
-exec runuser -u nsrunner -- env \
-	WINEPREFIX="$NS_WINE_PREFIX" \
-	WINEDEBUG="$NS_WINE_DEBUG" \
-	script -qec /usr/local/bin/run.sh /dev/null
+exec runuser -u nsrunner -- /usr/local/bin/run.sh > >(sed -u $'s/\033]0;[^\a]*\a//g')
