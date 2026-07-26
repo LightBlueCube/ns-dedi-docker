@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-if [[ ! -t 0 && "${NS_RUN_IN_PTY-}" != 1 ]]; then
-	echo "run.sh: using PTY mode!"
+# the game process does not print the logs without a PTY, no idea why
+if [[ "${NS_RUN_IN_PTY-}" != 1 ]]; then
 	exec env NS_RUN_IN_PTY=1 script -qec /usr/local/bin/run.sh /dev/null
 	exit 0
 fi

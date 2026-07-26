@@ -167,14 +167,20 @@ export WINEPREFIX="${WINEPREFIX:-$NS_WINE_PREFIX}"
 if [[ ! -f "$WINEPREFIX/system.reg" ]]; then
 	log "wine prefix is missing; initializing it at $WINEPREFIX"
 	runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" wineboot
+else
+	log "preparing persistent wine session..."
+	# keep wineboot's volatile CPU/TSC registry alive; without it, the game simulation runs slowly.
+	runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" bash -c 'wineserver -p && wineboot -u'
 fi
 
 if [[ -n "${PORT_UDP-}" ]]; then
 	REQUIRED_STARTUP_ARGS="$REQUIRED_STARTUP_ARGS -port $PORT_UDP"
 fi
 
+# suppress bcrypt fixme message, otherwise it spams dozens of messages per second
 export WINEDEBUG="${WINEDEBUG:-fixme-bcrypt}"
 export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-winedbg.exe=}"
 
 log "all done! starting the server..."
+# wine writes window-title OSC sequences to stdout; docker logs them as text, so use sed to filter them out.
 exec runuser -u nsrunner -- /usr/local/bin/run.sh > >(sed -u $'s/\033]0;[^\a]*\a//g')
