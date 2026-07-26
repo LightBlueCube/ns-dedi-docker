@@ -10,8 +10,11 @@ printf "\n\n\n\nNorthstar Dedicated Server - Docker\n"
 
 if [ ! -f "$SRVPATH/$ENTRY" ]; then
 	log "missing northstar, copying files..."
-	cp -rf /mnt/northstar/* /home/r2ds/
-	chown -R nsrunner:nsrunner /home/r2ds
+	cp -rf /mnt/northstar/* $SRVPATH
+	chown -R nsrunner:nsrunner $SRVPATH
+
+	log "writing NS_STARTUP_ARGS to ns_startup_args_dedi.txt..."
+	printf '%s' "${NS_STARTUP_ARGS-}" > "$SRVPATH/ns_startup_args_dedi.txt"
 
 	log "linking plugins..."
 	rm -rf -- "$PLUGINPATH"
@@ -159,19 +162,20 @@ else
 	log "mods are already up to date!"
 fi
 
-WINEDEBUG="${WINEDEBUG:-fixme-bcrypt}"
+NS_WINE_DEBUG="${NS_WINE_DEBUG:-fixme-bcrypt}"
 
 if [[ ! -f "$NS_WINE_PREFIX/system.reg" ]]; then
 	log "wine prefix is missing; initializing it at $NS_WINE_PREFIX"
-	su nsrunner -c "WINEPREFIX=\"$NS_WINE_PREFIX\" WINEDEBUG=\"$WINEDEBUG\" wineboot"
+	su nsrunner -c "WINEPREFIX=\"$NS_WINE_PREFIX\" WINEDEBUG=\"$NS_WINE_DEBUG\" wineboot"
 fi
 
 if [[ -n "${PORT_UDP-}" ]]; then
 	REQUIRED_STARTUP_ARGS="$REQUIRED_STARTUP_ARGS -port $PORT_UDP"
 fi
 
+
 log "all done! starting the server..."
 exec runuser -u nsrunner -- env \
 	WINEPREFIX="$NS_WINE_PREFIX" \
-	WINEDEBUG="$WINEDEBUG" \
-	script -qefc /usr/local/bin/run.sh /dev/null
+	WINEDEBUG="$NS_WINE_DEBUG" \
+	script -qec /usr/local/bin/run.sh /dev/null

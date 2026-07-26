@@ -17,7 +17,8 @@
 | `ENTRY` 					| The entry executable file<br/>This normally should not be changed 										|
 | `MODPATH` 				| The `entrypoint.sh` synchronizes `/mnt/mods` to here<br/>This normally should not be changed				|
 | `PLUGINPATH` 				| The `entrypoint.sh` replaces it with a symlink to `/mnt/plugins`<br/>This normally should not be changed 	|
-| `NS_WINE_PREFIX` 			| Wine prefix<br/>This normally should not be changed 														|
+| `NS_WINE_PREFIX` 			| WINEPREFIX<br/>This normally should not be changed 														|
+| `NS_WINE_DEBUG` 			| WINEDEBUG<br/>This normally should not be changed 														|
 | `REQUIRED_STARTUP_ARGS` 	| Some required arguments for the dedicated server<br/>This normally should not be changed 					|
 | `NS_STARTUP_ARGS` 		| Server startup arguments. Use it in the same way as `ns_startup_args_dedi.txt` 							|
 | `PORT_TCP` 				| See `autoexec_ns_server.cfg` > `ns_player_auth_port` 														|
@@ -80,7 +81,8 @@ docker buildx build -t nsdedi -f dockerfile .
 | `ENTRY` 					| 入口可执行文件<br/>无特殊需求不应修改 												|
 | `MODPATH` 				| `entrypoint.sh` 会将 `/mnt/mods` 同步到此路径<br/>无特殊需求不应修改				|
 | `PLUGINPATH` 				| `entrypoint.sh` 会将其替换为指向 `/mnt/plugins` 的符号链接<br/>无特殊需求不应修改 	|
-| `NS_WINE_PREFIX` 			| Wine prefix<br/>无特殊需求不应修改 												|
+| `NS_WINE_PREFIX` 			| WINEPREFIX<br/>无特殊需求不应修改 												|
+| `NS_WINE_DEBUG` 			| WINEDEBUG<br/>无特殊需求不应修改 												|
 | `REQUIRED_STARTUP_ARGS` 	| 专用服务器必需的一些启动参数<br/>无特殊需求不应修改 									|
 | `NS_STARTUP_ARGS` 		| 服务器启动参数。使用方式参照 `ns_startup_args_dedi.txt` 							|
 | `PORT_TCP` 				| 参见 `autoexec_ns_server.cfg` > `ns_player_auth_port` 							|
