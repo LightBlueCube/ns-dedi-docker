@@ -1,13 +1,13 @@
 FROM archlinux:base
 
-RUN pacman -Sy --noconfirm wine-staging xorg-server-xvfb && \
+RUN pacman -Syu --noconfirm wine-staging xorg-server-xvfb && \
+	rm -rf /var/cache/pacman/pkg/* && \
 	useradd -m nsrunner
 
 COPY --chown=nsrunner:nsrunner --chmod=755 entrypoint.sh run.sh /usr/local/bin/
-COPY --chown=nsrunner:nsrunner R2N /mnt/titanfall
+COPY --chown=nsrunner:nsrunner R2N /home/r2ds
 
-RUN mv -f /mnt/titanfall /home/r2ds/ && \
-	mkdir /mnt/mods /mnt/plugins
+RUN mkdir /mnt/mods /mnt/plugins
 
 ENV SRVPATH="/home/r2ds"
 ENV ENTRY="NorthstarLauncher.exe"
