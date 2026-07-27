@@ -182,5 +182,5 @@ export WINEDEBUG="${WINEDEBUG:-fixme-bcrypt}"
 export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-winedbg.exe=}"
 
 log "all done! starting the server..."
-# wine writes window-title OSC sequences to stdout; docker logs them as text, so use sed to filter them out.
+# wine writes window-title OSC sequences to stdout. docker's log see them as plain text, so filter them out with sed.
 exec runuser -u nsrunner -- /usr/local/bin/run.sh > >(sed -u $'s/\033]0;[^\a]*\a//g')
