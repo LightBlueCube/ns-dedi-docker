@@ -26,6 +26,8 @@ jobs:
           repo="${GITHUB_REPOSITORY,,}"
           echo "IMAGE_TAG=ghcr.io/${repo}/northstar-dedi:${GITHUB_SHA::7}" >> "$GITHUB_ENV"
           echo "IMAGE_LATEST_TAG=ghcr.io/${repo}/northstar-dedi:latest" >> "$GITHUB_ENV"
+          echo "XVFB_IMAGE_TAG=ghcr.io/${repo}/northstar-dedi-xvfb:${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+          echo "XVFB_IMAGE_LATEST_TAG=ghcr.io/${repo}/northstar-dedi-xvfb:latest" >> "$GITHUB_ENV"
 
       - name: Download server files
         env:
@@ -68,3 +70,13 @@ jobs:
           tags: |
             ${{ env.IMAGE_LATEST_TAG }}
             ${{ env.IMAGE_TAG }}
+
+      - name: Build and publish Xvfb Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: dockerfile.xvfb
+          push: true
+          tags: |
+            ${{ env.XVFB_IMAGE_LATEST_TAG }}
+            ${{ env.XVFB_IMAGE_TAG }}

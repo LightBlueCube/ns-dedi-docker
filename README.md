@@ -4,7 +4,19 @@
 
 ### Setup
 
-| Container path 	| Purpose 					| Description 			|
+`ghcr.io/lightbluecube/ns-dedi-docker/northstar-dedi`
+
+use this image if you are not sure which one to choose
+
+`ghcr.io/lightbluecube/ns-dedi-docker/northstar-dedi-xvfb`
+
+is for older Northstar versions that do not support `-nowindow`, or other cases that require a xvfb environment to run
+
+<br/>
+
+Mount your files at the following container paths:
+
+| Container path 	| Purpose 					| Details	 			|
 | --- 				| --- 						| --- 					|
 | `/mnt/northstar` 	| NorthstarLuncher files 	| Required, read-only 	|
 | `/mnt/mods` 		| Mods directory 			| Optional, read-only 	|
@@ -67,7 +79,19 @@ docker buildx build -t nsdedi -f dockerfile .
 
 ### 配置
 
-| 容器路径 			| 用途 						| 描述 				|
+`ghcr.io/lightbluecube/ns-dedi-docker/northstar-dedi`
+
+如果你不知道选什么，选这个
+
+`ghcr.io/lightbluecube/ns-dedi-docker/northstar-dedi-xvfb`
+
+适用于不支持`-nowindow`的旧版Northstar，或其他需要xvfb环境才能运行的情况
+
+<br/>
+
+请将你的文件挂载到以下容器路径：
+
+| 容器路径 			| 用途 						| 细节 				|
 | --- 				| --- 						| --- 				|
 | `/mnt/northstar` 	| NorthstarLauncher 文件 	| 必需，只读 			|
 | `/mnt/mods` 		| 模组目录 					| 可选，只读 			|
