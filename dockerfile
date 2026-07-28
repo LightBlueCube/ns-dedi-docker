@@ -4,8 +4,7 @@ RUN pacman -Syu --noconfirm wine-staging && \
 	rm -rf /var/cache/pacman/pkg/* && \
 	useradd -m nsrunner
 
-COPY --chown=nsrunner:nsrunner --chmod=755 entrypoint.sh /usr/local/bin/
-COPY --chown=nsrunner:nsrunner --chmod=755 run-no-xvfb.sh /usr/local/bin/run.sh
+COPY --chown=nsrunner:nsrunner --chmod=755 entrypoint.sh run.sh /usr/local/bin/
 COPY --chown=nsrunner:nsrunner R2N /home/r2ds
 
 RUN mkdir /mnt/mods /mnt/plugins
