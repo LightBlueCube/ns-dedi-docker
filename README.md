@@ -10,7 +10,7 @@ use this image if you are not sure which one to choose
 
 `ghcr.io/lightbluecube/ns-dedi-docker/northstar-dedi-xvfb`
 
-is for older Northstar versions that do not support `-nowindow`, or other cases that require a xvfb environment to run
+is for older Northstar versions that does not support `-nowindow`, or other cases that require a xvfb environment to run
 
 <br/>
 
@@ -18,6 +18,7 @@ Mount your files at the following container paths:
 
 | Container path 	| Purpose 					| Details	 			|
 | --- 				| --- 						| --- 					|
+| `/mnt/server` 	| Slimmed TTF2 files 		| Required, read-only 	|
 | `/mnt/northstar` 	| NorthstarLuncher files 	| Required, read-only 	|
 | `/mnt/mods` 		| Mods directory 			| Optional, read-only 	|
 | `/mnt/plugins` 	| Plugin directory 			| Optional, read-only 	|
@@ -25,18 +26,17 @@ Mount your files at the following container paths:
 
 | ENVs 						| Description 																								|
 | --- 						| --- 																										|
+| `SRV_NAME` 				| See `autoexec_ns_server.cfg` > `ns_server_name` 															|
+| `SRV_DESC` 				| See `autoexec_ns_server.cfg` > `ns_server_desc` 															|
+| `PORT_TCP` 				| See `autoexec_ns_server.cfg` > `ns_player_auth_port` 														|
+| `PORT_UDP` 				| Passed through via `-port $PORT_UDP` 																		|
+| `NS_STARTUP_ARGS` 		| Server startup arguments. Use it in the same way as `ns_startup_args_dedi.txt` 							|
+| `REQUIRED_STARTUP_ARGS` 	| Some required arguments for the dedicated server<br/>This normally should not be changed 					|
 | `SRVPATH` 				| Server root directory<br/>This normally should not be changed 											|
 | `ENTRY` 					| The entry executable file<br/>This normally should not be changed 										|
 | `MODPATH` 				| The `entrypoint.sh` synchronizes `/mnt/mods` to here<br/>This normally should not be changed				|
 | `PLUGINPATH` 				| The `entrypoint.sh` replaces it with a symlink to `/mnt/plugins`<br/>This normally should not be changed 	|
 | `NS_WINE_PREFIX` 			| WINEPREFIX<br/>This normally should not be changed 														|
-| `REQUIRED_STARTUP_ARGS` 	| Some required arguments for the dedicated server<br/>This normally should not be changed 					|
-| `NS_STARTUP_ARGS` 		| Server startup arguments. Use it in the same way as `ns_startup_args_dedi.txt` 							|
-| `PORT_TCP` 				| See `autoexec_ns_server.cfg` > `ns_player_auth_port` 														|
-| `PORT_UDP` 				| Passed through via `-port $PORT_UDP` 																		|
-| `SRV_NAME` 				| See `autoexec_ns_server.cfg` > `ns_server_name` 															|
-| `SRV_DESC` 				| See `autoexec_ns_server.cfg` > `ns_server_desc` 															|
-
 
 #### Overrides autoexec_ns_server.cfg
 
@@ -52,8 +52,10 @@ For example:
 ----
 
 An example command for starting a server:
+
 ```bash
 docker run --rm \
+	-v /home/r2ds/R2N:/mnt/server:ro \
 	-v /home/r2ds/r2ns_v1_18:/mnt/northstar:ro \
 	-v /home/r2ds/my_mods:/mnt/mods:ro \
 	-e ns_auth_allow_insecure=1 \
@@ -66,10 +68,6 @@ docker run --rm \
 ```
 
 ### Build
-
-Make sure you have placed the slimmed-down base Titanfall 2 files in `R2N/`
-
-If you does not have one, check the Releases of this repository
 
 ```bash
 docker buildx build -t nsdedi -f dockerfile .
@@ -93,6 +91,7 @@ docker buildx build -t nsdedi -f dockerfile .
 
 | 容器路径 			| 用途 						| 细节 				|
 | --- 				| --- 						| --- 				|
+| `/mnt/server` 	| 精简的 TTF2 文件 			| 必需，只读 		 	|
 | `/mnt/northstar` 	| NorthstarLauncher 文件 	| 必需，只读 			|
 | `/mnt/mods` 		| 模组目录 					| 可选，只读 			|
 | `/mnt/plugins` 	| 插件目录 					| 可选，只读 			|
@@ -100,18 +99,17 @@ docker buildx build -t nsdedi -f dockerfile .
 
 | 环境变量 					| 描述 																			|
 | --- 						| --- 																			|
+| `SRV_NAME` 				| 参见 `autoexec_ns_server.cfg` > `ns_server_name` 								|
+| `SRV_DESC` 				| 参见 `autoexec_ns_server.cfg` > `ns_server_desc` 								|
+| `PORT_TCP` 				| 参见 `autoexec_ns_server.cfg` > `ns_player_auth_port` 							|
+| `PORT_UDP` 				| 通过 `-port $PORT_UDP` 传递 													|
+| `NS_STARTUP_ARGS` 		| 服务器启动参数。使用方式参照 `ns_startup_args_dedi.txt` 							|
+| `REQUIRED_STARTUP_ARGS` 	| 专用服务器必需的一些启动参数<br/>无特殊需求不应修改 									|
 | `SRVPATH` 				| 服务器根目录<br/>无特殊需求不应修改 												|
 | `ENTRY` 					| 入口可执行文件<br/>无特殊需求不应修改 												|
 | `MODPATH` 				| `entrypoint.sh` 会将 `/mnt/mods` 同步到此路径<br/>无特殊需求不应修改				|
 | `PLUGINPATH` 				| `entrypoint.sh` 会将其替换为指向 `/mnt/plugins` 的符号链接<br/>无特殊需求不应修改 	|
 | `NS_WINE_PREFIX` 			| WINEPREFIX<br/>无特殊需求不应修改 												|
-| `REQUIRED_STARTUP_ARGS` 	| 专用服务器必需的一些启动参数<br/>无特殊需求不应修改 									|
-| `NS_STARTUP_ARGS` 		| 服务器启动参数。使用方式参照 `ns_startup_args_dedi.txt` 							|
-| `PORT_TCP` 				| 参见 `autoexec_ns_server.cfg` > `ns_player_auth_port` 							|
-| `PORT_UDP` 				| 通过 `-port $PORT_UDP` 传递 													|
-| `SRV_NAME` 				| 参见 `autoexec_ns_server.cfg` > `ns_server_name` 								|
-| `SRV_DESC` 				| 参见 `autoexec_ns_server.cfg` > `ns_server_desc` 								|
-
 
 #### 覆盖 autoexec_ns_server.cfg 配置
 
@@ -127,8 +125,10 @@ docker buildx build -t nsdedi -f dockerfile .
 ----
 
 一个启动服务器的示例命令：
+
 ```bash
 docker run --rm \
+	-v /home/r2ds/R2N:/mnt/server:ro \
 	-v /home/r2ds/r2ns_v1_18:/mnt/northstar:ro \
 	-v /home/r2ds/my_mods:/mnt/mods:ro \
 	-e ns_auth_allow_insecure=1 \
@@ -141,10 +141,6 @@ docker run --rm \
 ```
 
 ### 构建
-
-确保已将精简后的ttf2基础文件放在 `R2N/` 目录中
-
-如果你并没有一个，查看这个仓库的Releases
 
 ```bash
 docker buildx build -t nsdedi -f dockerfile .

@@ -6,15 +6,40 @@ log()
 	printf 'entrypoint.sh: %s\n' "$*"
 }
 
+link_dir() {
+	local src="$1"
+
+	while IFS='' read -r -d '' path; do
+		name="${path##*/}"
+		case "$name" in
+			bin|R2Northstar|ns_startup_args_dedi.txt)
+				continue
+				;;
+		esac
+		ln -sfnT -- "$path" "$SRVPATH/$name"
+	done < <(find $src -mindepth 1 -maxdepth 1 -print0)
+}
+
 printf "\n\n\n\nNorthstar Dedicated Server - Docker\n"
 
 if [ ! -f "$SRVPATH/$ENTRY" ]; then
-	log "missing northstar, copying files..."
-	cp -rf /mnt/northstar/* $SRVPATH
-	chown -R nsrunner:nsrunner $SRVPATH
+	log "preparing server files..."
+
+	log "linking server files..."
+	link_dir /mnt/server
+	link_dir /mnt/northstar
+
+	log "copying bin..."
+	cp -a -- /mnt/server/bin "$SRVPATH/bin"
+	cp -a --remove-destination -- /mnt/northstar/bin/. "$SRVPATH/bin/"
+
+	log "copying R2Northstar..."
+	cp -a -- /mnt/northstar/R2Northstar "$SRVPATH/"
+	chown -R nsrunner:nsrunner "$SRVPATH/R2Northstar"
 
 	log "writing NS_STARTUP_ARGS to ns_startup_args_dedi.txt..."
 	printf '%s' "${NS_STARTUP_ARGS-}" > "$SRVPATH/ns_startup_args_dedi.txt"
+	chown nsrunner:nsrunner "$SRVPATH/ns_startup_args_dedi.txt"
 
 	log "linking plugins..."
 	rm -rf -- "$PLUGINPATH"
@@ -177,10 +202,10 @@ if [[ -n "${PORT_UDP-}" ]]; then
 	REQUIRED_STARTUP_ARGS="$REQUIRED_STARTUP_ARGS -port $PORT_UDP"
 fi
 
-# suppress bcrypt fixme message, otherwise it spams dozens of messages per second
-export WINEDEBUG="${WINEDEBUG:-fixme-bcrypt}"
+# suppress some debug messages to avoid it spams
+export WINEDEBUG="${WINEDEBUG:-fixme-secur32,fixme-bcrypt,fixme-ver,fixme-file,err-wldap32}"
 export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-winedbg.exe=}"
 
 log "all done! starting the server..."
-# wine writes window-title OSC sequences to stdout. docker log see them as plain text, so filter them out with sed.
+# wine writes window-title OSC sequences to stdout. docker log see them as plain text, filter them out with sed.
 exec runuser -u nsrunner -- /usr/local/bin/run.sh > >(sed -u $'s/\033]0;[^\a]*\a//g')

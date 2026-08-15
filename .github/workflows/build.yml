@@ -29,27 +29,6 @@ jobs:
           echo "XVFB_IMAGE_TAG=ghcr.io/${repo}/northstar-dedi-xvfb:${GITHUB_SHA::7}" >> "$GITHUB_ENV"
           echo "XVFB_IMAGE_LATEST_TAG=ghcr.io/${repo}/northstar-dedi-xvfb:latest" >> "$GITHUB_ENV"
 
-      - name: Download server files
-        env:
-            GH_TOKEN: ${{github.token}}
-            SERVER_FILES_TAG: server-files-v1
-        run: |
-            gh release download "$SERVER_FILES_TAG" \
-            --repo "$GITHUB_REPOSITORY" \
-            --pattern "R2N_base.tar.zst" \
-            --pattern "R2N_vpk.tar.zst"
-
-            gh release download "$SERVER_FILES_TAG" \
-            --repo "$GITHUB_REPOSITORY" \
-            --pattern "sha256sums"
-            sha256sum -c sha256sums
-
-            mkdir -p R2N/vpk
-
-            tar --zstd -xf R2N_base.tar.zst -C R2N
-            tar --zstd -xf R2N_vpk.tar.zst -C R2N/vpk
-
-            rm -f R2N_base.tar.zst R2N_vpk.tar.zst
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
