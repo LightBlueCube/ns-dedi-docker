@@ -45,7 +45,7 @@ jobs:
         with:
           context: .
           file: dockerfile
-          push: true
+          outputs: type=registry,compression=zstd,compression-level=6,force-compression=true,oci-mediatypes=true
           tags: |
             ${{ env.IMAGE_LATEST_TAG }}
             ${{ env.IMAGE_TAG }}
@@ -55,7 +55,7 @@ jobs:
         with:
           context: .
           file: dockerfile.xvfb
-          push: true
+          outputs: type=registry,compression=zstd,compression-level=6,force-compression=true,oci-mediatypes=true
           tags: |
             ${{ env.XVFB_IMAGE_LATEST_TAG }}
             ${{ env.XVFB_IMAGE_TAG }}
