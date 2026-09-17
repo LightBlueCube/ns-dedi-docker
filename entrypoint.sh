@@ -121,12 +121,10 @@ generate_cfg_env()
 				env_value="${!env_name}"
 				cfg_value="$env_value"
 
-				if [[ ! "$cfg_value" =~ ^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$ ]] &&
-					[[ ! "$cfg_value" =~ ^\".*\"$ ]]; then
-					cfg_value="${cfg_value//\\/\\\\}"
-					cfg_value="${cfg_value//\"/\\\"}"
-					cfg_value="\"$cfg_value\""
-				fi
+			if [[ ! "$cfg_value" =~ ^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$ ]] &&
+				[[ ! "$cfg_value" =~ ^\".*\"$ ]]; then
+				cfg_value="\"$cfg_value\""
+			fi
 
 				if [[ "$old_value" =~ ^(.*[^[:space:]])([[:space:]]*)$ ]]; then
 					trailing="${BASH_REMATCH[2]}"
@@ -189,14 +187,13 @@ fi
 
 export WINEPREFIX="${WINEPREFIX:-$NS_WINE_PREFIX}"
 
-if [[ ! -f "$WINEPREFIX/system.reg" ]]; then
-	log "wine prefix is missing; initializing it at $WINEPREFIX"
-	runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" wineboot
-else
-	log "preparing persistent wine session..."
-	# keep wineboot's volatile CPU/TSC registry alive; without it, the game simulation runs slowly.
-	runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" bash -c 'wineserver -p && wineboot -u'
-fi
+log "preparing persistent wine session at $WINEPREFIX..."
+# start the server inside a long-lived wine session, otherwise the game simulation
+# may run in slow motion on some hosts (never figured out why, so dont remove this)
+# - drive_c has to exist before wineserver can start on a fresh prefix
+# - wineserver -p keeps the session alive; wineboot's own server just exits when idle
+# - wineboot -u sets up / refreshes the prefix inside that same session
+runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" bash -c 'mkdir -p -- "$WINEPREFIX/drive_c" && wineserver -p && wineboot -u'
 
 if [[ -n "${PORT_UDP-}" ]]; then
 	REQUIRED_STARTUP_ARGS="$REQUIRED_STARTUP_ARGS -port $PORT_UDP"
