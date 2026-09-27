@@ -60,6 +60,8 @@ record_heartbeat()
 	done
 }
 
+log "starting server..."
+
 : > "$HEARTBEAT_FILE"
 /usr/local/bin/run.sh > >(tee >(grep -a --line-buffered -o -- "$TITLE_RE" | record_heartbeat)) &
 
@@ -71,13 +73,13 @@ shutdown()
 }
 trap shutdown TERM INT
 
+sleep 5
+
 SERVER_PID="$(pgrep -f -- "$ENTRY" | head -n 1 || true)"
 if [[ -z "$SERVER_PID" ]]; then
-	log "fatal: no server process matching '$ENTRY', why?"
+	log "no server process matching '$ENTRY', why?"
 	exit 2
 fi
-
-log "watching server (pid=$SERVER_PID)"
 
 readonly POLL_INTERVAL=5
 while kill -0 -- "$SERVER_PID" 2>/dev/null; do
