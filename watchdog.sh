@@ -61,7 +61,7 @@ record_heartbeat()
 }
 
 : > "$HEARTBEAT_FILE"
-/usr/local/bin/run.sh > >(tee >(grep --line-buffered -o -- "$TITLE_RE" | record_heartbeat)) &
+/usr/local/bin/run.sh > >(tee >(grep -a --line-buffered -o -- "$TITLE_RE" | record_heartbeat)) &
 SERVER_PID=$!
 
 log "watching server (pid=$SERVER_PID)"

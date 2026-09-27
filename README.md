@@ -24,21 +24,21 @@ Mount your files at the following container paths:
 | `/mnt/plugins` 	| Plugin directory 			| Optional, read-only 	|
 
 
-| ENVs 						| Description 																								|
-| --- 						| --- 																										|
-| `SRV_NAME` 				| See `autoexec_ns_server.cfg` > `ns_server_name` 															|
-| `SRV_DESC` 				| See `autoexec_ns_server.cfg` > `ns_server_desc` 															|
-| `PORT_TCP` 				| See `autoexec_ns_server.cfg` > `ns_player_auth_port` 														|
-| `PORT_UDP` 				| Passed through via `-port $PORT_UDP` 																		|
-| `STARTUP_ARGS` 			| Server startup arguments. Use it in the same way as `ns_startup_args_dedi.txt` 							|
-| `WATCHDOG_ENABLE` 		| Kill the server when it hangs; pass `0` to disable watchdog 												|
-| `WATCHDOG_TIMEOUT` 		| Seconds of hang before the watchdog kills the server 														|
-| `REQUIRED_STARTUP_ARGS` 	| Some required arguments for the dedicated server<br/>This normally should not be changed 					|
-| `SRVPATH` 				| Server root directory<br/>This normally should not be changed 											|
-| `ENTRY` 					| The entry executable file<br/>This normally should not be changed 										|
-| `MODPATH` 				| The `entrypoint.sh` synchronizes `/mnt/mods` to here<br/>This normally should not be changed				|
-| `PLUGINPATH` 				| The `entrypoint.sh` replaces it with a symlink to `/mnt/plugins`<br/>This normally should not be changed 	|
-| `NS_WINE_PREFIX` 			| WINEPREFIX<br/>This normally should not be changed 														|
+| ENVs 						| Description 																												|
+| --- 						| --- 																														|
+| `SRV_NAME` 				| See `autoexec_ns_server.cfg` > `ns_server_name` 																			|
+| `SRV_DESC` 				| See `autoexec_ns_server.cfg` > `ns_server_desc` 																			|
+| `PORT_TCP` 				| See `autoexec_ns_server.cfg` > `ns_player_auth_port` 																		|
+| `PORT_UDP` 				| Passed through via `-port $PORT_UDP` 																						|
+| `STARTUP_ARGS` 			| Server startup arguments. Use it in the same way as `ns_startup_args_dedi.txt` 											|
+| `WATCHDOG_ENABLE` 		| Kill the server when it hangs; pass `0` to disable watchdog<br/>NOTE: requires enable `ns_report_server_to_masterserver` 	|
+| `WATCHDOG_TIMEOUT` 		| Seconds of hang before the watchdog kills the server 																		|
+| `REQUIRED_STARTUP_ARGS` 	| Some required arguments for the dedicated server<br/>This normally should not be changed 									|
+| `SRVPATH` 				| Server root directory<br/>This normally should not be changed 															|
+| `ENTRY` 					| The entry executable file<br/>This normally should not be changed 														|
+| `MODPATH` 				| The `entrypoint.sh` synchronizes `/mnt/mods` to here<br/>This normally should not be changed								|
+| `PLUGINPATH` 				| The `entrypoint.sh` replaces it with a symlink to `/mnt/plugins`<br/>This normally should not be changed 					|
+| `NS_WINE_PREFIX` 			| WINEPREFIX<br/>This normally should not be changed 																		|
 
 #### Overrides autoexec_ns_server.cfg
 
@@ -99,21 +99,21 @@ docker buildx build -t nsdedi -f dockerfile .
 | `/mnt/plugins` 	| 插件目录 					| 可选，只读 			|
 
 
-| 环境变量 					| 描述 																			|
-| --- 						| --- 																			|
-| `SRV_NAME` 				| 参见 `autoexec_ns_server.cfg` > `ns_server_name` 								|
-| `SRV_DESC` 				| 参见 `autoexec_ns_server.cfg` > `ns_server_desc` 								|
-| `PORT_TCP` 				| 参见 `autoexec_ns_server.cfg` > `ns_player_auth_port` 							|
-| `PORT_UDP` 				| 通过 `-port $PORT_UDP` 传递 													|
-| `STARTUP_ARGS` 			| 服务器启动参数。使用方式参照 `ns_startup_args_dedi.txt` 							|
-| `WATCHDOG_ENABLE` 		| 当服务器卡死时杀死服务器，传入 `0` 来禁用 watchdog 									|
-| `WATCHDOG_TIMEOUT` 		| 卡死超过多少秒时 watchdog 才会杀死服务器 											|
-| `REQUIRED_STARTUP_ARGS` 	| 专用服务器必需的一些启动参数<br/>无特殊需求不应修改 									|
-| `SRVPATH` 				| 服务器根目录<br/>无特殊需求不应修改 												|
-| `ENTRY` 					| 入口可执行文件<br/>无特殊需求不应修改 												|
-| `MODPATH` 				| `entrypoint.sh` 会将 `/mnt/mods` 同步到此路径<br/>无特殊需求不应修改				|
-| `PLUGINPATH` 				| `entrypoint.sh` 会将其替换为指向 `/mnt/plugins` 的符号链接<br/>无特殊需求不应修改 	|
-| `NS_WINE_PREFIX` 			| WINEPREFIX<br/>无特殊需求不应修改 												|
+| 环境变量 					| 描述 																								|
+| --- 						| --- 																								|
+| `SRV_NAME` 				| 参见 `autoexec_ns_server.cfg` > `ns_server_name` 													|
+| `SRV_DESC` 				| 参见 `autoexec_ns_server.cfg` > `ns_server_desc` 													|
+| `PORT_TCP` 				| 参见 `autoexec_ns_server.cfg` > `ns_player_auth_port` 												|
+| `PORT_UDP` 				| 通过 `-port $PORT_UDP` 传递 																		|
+| `STARTUP_ARGS` 			| 服务器启动参数。使用方式参照 `ns_startup_args_dedi.txt` 												|
+| `WATCHDOG_ENABLE` 		| 当服务器卡死时杀死服务器，传入 `0` 来禁用 watchdog<br/>NOTE：需要开启 `ns_report_server_to_masterserver` 	|
+| `WATCHDOG_TIMEOUT` 		| 卡死超过多少秒时 watchdog 才会杀死服务器 																|
+| `REQUIRED_STARTUP_ARGS` 	| 专用服务器必需的一些启动参数<br/>无特殊需求不应修改 														|
+| `SRVPATH` 				| 服务器根目录<br/>无特殊需求不应修改 																	|
+| `ENTRY` 					| 入口可执行文件<br/>无特殊需求不应修改 																	|
+| `MODPATH` 				| `entrypoint.sh` 会将 `/mnt/mods` 同步到此路径<br/>无特殊需求不应修改									|
+| `PLUGINPATH` 				| `entrypoint.sh` 会将其替换为指向 `/mnt/plugins` 的符号链接<br/>无特殊需求不应修改 						|
+| `NS_WINE_PREFIX` 			| WINEPREFIX<br/>无特殊需求不应修改 																	|
 
 #### 覆盖 autoexec_ns_server.cfg 配置
 
