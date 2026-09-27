@@ -6,7 +6,7 @@ RUN pacman -Syu --noconfirm wine-staging && \
 
 COPY --chown=nsrunner:nsrunner --chmod=755 entrypoint.sh run.sh watchdog.sh /usr/local/bin/
 
-RUN mkdir -p /home/r2ds /mnt/mods /mnt/plugins
+RUN mkdir -p /home/r2ds /mnt/mods /mnt/plugins /mnt/logs
 
 ENV SRV_NAME="hello world!"
 ENV SRV_DESC="programming in c"

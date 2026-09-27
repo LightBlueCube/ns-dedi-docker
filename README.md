@@ -16,12 +16,13 @@ For older Northstar versions that does not support `-nowindow`, or other cases t
 
 Mount your files at the following container paths:
 
-| Container path 	| Purpose 					| Details	 			|
-| --- 				| --- 						| --- 					|
-| `/mnt/server` 	| Slimmed TTF2 files 		| Required, read-only 	|
-| `/mnt/northstar` 	| NorthstarLuncher files 	| Required, read-only 	|
-| `/mnt/mods` 		| Mods directory 			| Optional, read-only 	|
-| `/mnt/plugins` 	| Plugin directory 			| Optional, read-only 	|
+| Container path 	| Purpose 					| Details	 				|
+| --- 				| --- 						| --- 						|
+| `/mnt/server` 	| Slimmed TTF2 files 		| Required, read-only 		|
+| `/mnt/northstar` 	| NorthstarLuncher files 	| Required, read-only 		|
+| `/mnt/mods` 		| Mods directory 			| Optional, read-only 		|
+| `/mnt/plugins` 	| Plugin directory 			| Optional, read-only 		|
+| `/mnt/logs` 		| Logs directory 			| Optional, **writable** 	|
 
 
 | ENVs 						| Description 																												|
@@ -91,12 +92,13 @@ docker buildx build -t nsdedi -f dockerfile .
 
 请将你的文件挂载到以下容器路径：
 
-| 容器路径 			| 用途 						| 细节 				|
-| --- 				| --- 						| --- 				|
-| `/mnt/server` 	| 精简的 TTF2 文件 			| 必需，只读 		 	|
-| `/mnt/northstar` 	| NorthstarLauncher 文件 	| 必需，只读 			|
-| `/mnt/mods` 		| 模组目录 					| 可选，只读 			|
-| `/mnt/plugins` 	| 插件目录 					| 可选，只读 			|
+| 容器路径 			| 用途 						| 细节 			|
+| --- 				| --- 						| --- 			|
+| `/mnt/server` 	| 精简的 TTF2 文件 			| 必需，只读 		|
+| `/mnt/northstar` 	| NorthstarLauncher 文件 	| 必需，只读 		|
+| `/mnt/mods` 		| 模组目录 					| 可选，只读 		|
+| `/mnt/plugins` 	| 插件目录 					| 可选，只读 		|
+| `/mnt/logs` 		| 日志目录 					| 可选，**可写** 	|
 
 
 | 环境变量 					| 描述 																								|

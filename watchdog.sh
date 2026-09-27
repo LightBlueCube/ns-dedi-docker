@@ -66,17 +66,20 @@ SERVER_PID=$!
 
 log "watching server (pid=$SERVER_PID)"
 
+shutdown()
+{
+	kill_server
+	exit 143
+}
+trap shutdown TERM INT
+
 readonly POLL_INTERVAL=5
-while :; do
-	sleep $POLL_INTERVAL &
-	set +e
-	wait -n -p finished
-	status=$?
-	set -e
-
-	if [[ "${finished-}" == "$SERVER_PID" ]]; then
-		exit "$status"
-	fi
-
+while kill -0 -- "$SERVER_PID" 2>/dev/null; do
+	sleep "$POLL_INTERVAL"
 	check_watchdog
 done
+
+status=0
+wait "$SERVER_PID" || status=$?
+trap - TERM INT
+exit "$status"

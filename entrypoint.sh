@@ -41,6 +41,11 @@ if [ ! -f "$SRVPATH/$ENTRY" ]; then
 	printf '%s' "${NS_STARTUP_ARGS-}" > "$SRVPATH/ns_startup_args_dedi.txt"
 	chown nsrunner:nsrunner "$SRVPATH/ns_startup_args_dedi.txt"
 
+	log "linking logs..."
+	chown nsrunner:nsrunner /mnt/logs
+	rm -rf -- "$SRVPATH/R2Northstar/logs"
+	ln -s -- /mnt/logs "$SRVPATH/R2Northstar/logs"
+
 	log "linking plugins..."
 	rm -rf -- "$PLUGINPATH"
 	ln -s -- /mnt/plugins "$PLUGINPATH"
@@ -203,6 +208,9 @@ runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" bash -c '
 	fi
 	wineboot -u
 '
+# prevent winedbg from opening an interactive crash dialog
+runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" \
+	bash -c 'wine reg add "HKCU\\Software\\Wine\\WineDbg" /v ShowCrashDialog /t REG_DWORD /d 0 /f'
 
 if [[ -n "${PORT_UDP-}" ]]; then
 	REQUIRED_STARTUP_ARGS="$REQUIRED_STARTUP_ARGS -port $PORT_UDP"
@@ -210,8 +218,7 @@ fi
 
 # suppress some debug messages to avoid it spams
 export WINEDEBUG="${WINEDEBUG:-fixme-secur32,fixme-bcrypt,fixme-ver,fixme-file,err-wldap32}"
-export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-winedbg.exe=}"
-
+export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-}"
 log "all done! starting the server..."
 
 # filter the window-title OSC sequences out of docker logs
