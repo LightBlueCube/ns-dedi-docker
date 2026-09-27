@@ -44,6 +44,10 @@ if [ ! -f "$SRVPATH/$ENTRY" ]; then
 	log "linking plugins..."
 	rm -rf -- "$PLUGINPATH"
 	ln -s -- /mnt/plugins "$PLUGINPATH"
+
+	log "preparing home directory.."
+	mkdir -p -- "/home/nsrunner"
+	chown -R nsrunner:nsrunner "/home/nsrunner"
 fi
 
 declare -A CFG_ENV_ALIASES=(
@@ -189,11 +193,16 @@ export WINEPREFIX="${WINEPREFIX:-$NS_WINE_PREFIX}"
 
 log "preparing persistent wine session at $WINEPREFIX..."
 # start the server inside a long-lived wine session, otherwise the game simulation
-# may run in slow motion on some hosts (never figured out why, so dont remove this)
-# - drive_c has to exist before wineserver can start on a fresh prefix
-# - wineserver -p keeps the session alive; wineboot's own server just exits when idle
-# - wineboot -u sets up / refreshes the prefix inside that same session
-runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" bash -c 'mkdir -p -- "$WINEPREFIX/drive_c" && wineserver -p && wineboot -u'
+# may run in slow motion on some hosts (never figured out why, better dont remove this)
+runuser -u nsrunner -- env WINEPREFIX="$WINEPREFIX" bash -c '
+	mkdir -p -- "$WINEPREFIX/drive_c" || exit $?
+	wineserver -p
+	status=$?
+	if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
+		exit "$status"
+	fi
+	wineboot -u
+'
 
 if [[ -n "${PORT_UDP-}" ]]; then
 	REQUIRED_STARTUP_ARGS="$REQUIRED_STARTUP_ARGS -port $PORT_UDP"
@@ -204,5 +213,11 @@ export WINEDEBUG="${WINEDEBUG:-fixme-secur32,fixme-bcrypt,fixme-ver,fixme-file,e
 export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-winedbg.exe=}"
 
 log "all done! starting the server..."
-# wine writes window-title OSC sequences to stdout. docker log see them as plain text, filter them out with sed.
-exec runuser -u nsrunner -- /usr/local/bin/run.sh > >(sed -u $'s/\033]0;[^\a]*\a//g')
+
+# filter the window-title OSC sequences out of docker logs
+exec > >(sed -u $'s/\033]0;[^\a]*\a//g')
+if [[ "${WATCHDOG_ENABLE-}" == "0" || -z "${WATCHDOG_ENABLE-}" ]]; then
+	exec runuser -u nsrunner -- /usr/local/bin/run.sh
+else
+	exec runuser -u nsrunner -- /usr/local/bin/watchdog.sh
+fi

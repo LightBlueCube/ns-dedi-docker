@@ -9,4 +9,4 @@ fi
 
 stty cols 500 rows 100
 
-wine "$SRVPATH/$ENTRY" ${REQUIRED_STARTUP_ARGS-}
+exec wine "$SRVPATH/$ENTRY" ${REQUIRED_STARTUP_ARGS-}

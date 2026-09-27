@@ -6,11 +6,11 @@
 
 `ghcr.io/lightbluecube/ns-dedi-docker/northstar-dedi`
 
-use this image if you are not sure which one to choose
+Use this image if you are not sure which one to choose
 
 `ghcr.io/lightbluecube/ns-dedi-docker/northstar-dedi-xvfb`
 
-is for older Northstar versions that does not support `-nowindow`, or other cases that require a xvfb environment to run
+For older Northstar versions that does not support `-nowindow`, or other cases that require a xvfb environment to run
 
 <br/>
 
@@ -30,7 +30,9 @@ Mount your files at the following container paths:
 | `SRV_DESC` 				| See `autoexec_ns_server.cfg` > `ns_server_desc` 															|
 | `PORT_TCP` 				| See `autoexec_ns_server.cfg` > `ns_player_auth_port` 														|
 | `PORT_UDP` 				| Passed through via `-port $PORT_UDP` 																		|
-| `NS_STARTUP_ARGS` 		| Server startup arguments. Use it in the same way as `ns_startup_args_dedi.txt` 							|
+| `STARTUP_ARGS` 			| Server startup arguments. Use it in the same way as `ns_startup_args_dedi.txt` 							|
+| `WATCHDOG_ENABLE` 		| Kill the server when it hangs; pass `0` to disable watchdog 												|
+| `WATCHDOG_TIMEOUT` 		| Seconds of hang before the watchdog kills the server 														|
 | `REQUIRED_STARTUP_ARGS` 	| Some required arguments for the dedicated server<br/>This normally should not be changed 					|
 | `SRVPATH` 				| Server root directory<br/>This normally should not be changed 											|
 | `ENTRY` 					| The entry executable file<br/>This normally should not be changed 										|
@@ -60,7 +62,7 @@ docker run --rm \
 	-v /home/r2ds/my_mods:/mnt/mods:ro \
 	-e ns_auth_allow_insecure=1 \
 	-e ns_should_return_to_lobby=0 \
-	-e NS_STARTUP_ARGS=' +mp_gamemode ps +map mp_glitch +setplaylist ps +setplaylistvaroverrides "max_players 10"' \
+	-e NS_STARTUP_ARGS='+mp_gamemode ps +map mp_glitch +setplaylist ps +setplaylistvaroverrides "max_players 10"' \
 	-e PORT_TCP=11451 -e PORT_UDP=41919 \
 	-p 11451:11451/tcp \
 	-p 41919:41919/udp \
@@ -83,7 +85,7 @@ docker buildx build -t nsdedi -f dockerfile .
 
 `ghcr.io/lightbluecube/ns-dedi-docker/northstar-dedi-xvfb`
 
-适用于不支持`-nowindow`的旧版Northstar，或其他需要xvfb环境才能运行的情况
+适用于不支持 `-nowindow` 的旧版Northstar，或其他需要xvfb环境才能运行的情况
 
 <br/>
 
@@ -103,7 +105,9 @@ docker buildx build -t nsdedi -f dockerfile .
 | `SRV_DESC` 				| 参见 `autoexec_ns_server.cfg` > `ns_server_desc` 								|
 | `PORT_TCP` 				| 参见 `autoexec_ns_server.cfg` > `ns_player_auth_port` 							|
 | `PORT_UDP` 				| 通过 `-port $PORT_UDP` 传递 													|
-| `NS_STARTUP_ARGS` 		| 服务器启动参数。使用方式参照 `ns_startup_args_dedi.txt` 							|
+| `STARTUP_ARGS` 			| 服务器启动参数。使用方式参照 `ns_startup_args_dedi.txt` 							|
+| `WATCHDOG_ENABLE` 		| 当服务器卡死时杀死服务器，传入 `0` 来禁用 watchdog 									|
+| `WATCHDOG_TIMEOUT` 		| 卡死超过多少秒时 watchdog 才会杀死服务器 											|
 | `REQUIRED_STARTUP_ARGS` 	| 专用服务器必需的一些启动参数<br/>无特殊需求不应修改 									|
 | `SRVPATH` 				| 服务器根目录<br/>无特殊需求不应修改 												|
 | `ENTRY` 					| 入口可执行文件<br/>无特殊需求不应修改 												|
@@ -133,7 +137,7 @@ docker run --rm \
 	-v /home/r2ds/my_mods:/mnt/mods:ro \
 	-e ns_auth_allow_insecure=1 \
 	-e ns_should_return_to_lobby=0 \
-	-e NS_STARTUP_ARGS=' +mp_gamemode ps +map mp_glitch +setplaylist ps +setplaylistvaroverrides "max_players 10"' \
+	-e NS_STARTUP_ARGS='+mp_gamemode ps +map mp_glitch +setplaylist ps +setplaylistvaroverrides "max_players 10"' \
 	-e PORT_TCP=11451 -e PORT_UDP=41919 \
 	-p 11451:11451/tcp \
 	-p 41919:41919/udp \
