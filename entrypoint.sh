@@ -217,7 +217,7 @@ if [[ -n "${PORT_UDP-}" ]]; then
 fi
 
 # suppress some debug messages to avoid it spams
-export WINEDEBUG="${WINEDEBUG:-fixme-secur32,fixme-bcrypt,fixme-ver,fixme-file,err-wldap32}"
+export WINEDEBUG="${WINEDEBUG:-fixme-secur32,fixme-bcrypt,fixme-winsock,fixme-ver,fixme-file,err-wldap32}"
 export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-}"
 log "all done! starting the server..."
 
